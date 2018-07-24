@@ -17,21 +17,23 @@ class ItemList extends PureComponent {
   }
 
   render() {
-    return <div>
+    return <div className="mt-3">
+      <h1>商品列表</h1>
+      <button className="btn btn-primary mb-2" style={{float: 'right'}} onClick={() => this.props.changeView('cart')}>购物车</button>
       <table className="table">
         <thead className="thead-dark">
         <tr>
           <th scope="col">名称</th>
           <th scope="col">单价</th>
           <th scope="col">优惠信息</th>
-          <th scope="col">个数</th>
+          <th scope="col">数量</th>
         </tr>
         </thead>
         <tbody>
         {this.props.allItems.map((item) => {
           return <tr key={item.barcode}>
             <td width="25%">{item.name}</td>
-            <td width="25%">{item.price}元</td>
+            <td width="25%">{item.price.toFixed(2)}元</td>
             <td width="25%">
               {item.type}
             </td>
@@ -42,7 +44,6 @@ class ItemList extends PureComponent {
         })}
         </tbody>
       </table>
-      <button className="btn btn-primary" onClick={() => this.props.changeView('cart')}>购物车</button>
     </div>
   }
 }

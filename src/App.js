@@ -80,7 +80,10 @@ class App extends Component {
             onDeleteItemCount={this.deleteItemCount}
             changeView={this.changeView}
           />
-          : <CartItem cartItems={cartItems} allItems={allItems}/>
+          : <CartItem
+            cartItems={cartItems}
+            changeView={this.changeView}
+          />
         }
       </div>
     );
