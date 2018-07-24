@@ -12,7 +12,7 @@ const formatItems = () => {
     if (promotion) {
       type = promotion.type
     }
-    return {...item, count: 0, type};
+    return {...item, type};
   })
 }
 
@@ -21,43 +21,67 @@ class App extends Component {
     super(props);
 
     this.state = {
-      allItems: formatItems()
+      allItems: formatItems(),
+      cartItems: [],
+      viewType: 'itemList'
     }
   }
 
   addItemCount = (item) => {
-    const {allItems} = this.state
-    const findItem = allItems.find(i => i.barcode === item.barcode);
+    const {cartItems} = this.state
+    const findItem = cartItems.find(cartItem => cartItem.barcode === item.barcode);
 
-    findItem.count += 1;
+    if (findItem) {
+      findItem.count += 1;
+    } else {
+      cartItems.push({...item, count: 1});
+    }
+
     this.setState({
-      allItems: [...allItems]
+      cartItems: [...cartItems]
     })
   }
 
   deleteItemCount = (item) => {
-    const {allItems} = this.state
-    const findItem = allItems.find(i => i.barcode === item.barcode);
+    const {cartItems} = this.state
+    const findItem = cartItems.find(i => i.barcode === item.barcode);
 
-    if (findItem.count === 0) {
+    if (findItem) {
+      findItem.count -= 1;
+      if (findItem.count <= 0) {
+        const index = cartItems.indexOf(findItem);
+
+        cartItems.splice(index, 1);
+      }
+    } else {
       return
     }
-    findItem.count -= 1;
+
     this.setState({
-      allItems: [...allItems]
+      cartItems: [...cartItems]
+    })
+  }
+
+  changeView = (type) => {
+    this.setState({
+      viewType: type
     })
   }
 
   render() {
-    const {allItems} = this.state
+    const {allItems, cartItems, viewType} = this.state
     return (
       <div className="App">
-        <ItemList
-          allItems={allItems}
-          onAddItemCount={this.addItemCount}
-          onDeleteItemCount={this.deleteItemCount}
-        />
-        <CartItem/>
+        {viewType === 'itemList'
+          ? <ItemList
+            allItems={allItems}
+            cartItems={cartItems}
+            onAddItemCount={this.addItemCount}
+            onDeleteItemCount={this.deleteItemCount}
+            changeView={this.changeView}
+          />
+          : <CartItem cartItems={cartItems} allItems={allItems}/>
+        }
       </div>
     );
   }

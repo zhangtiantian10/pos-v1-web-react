@@ -2,12 +2,13 @@ import React, {PureComponent} from 'react';
 
 class ItemList extends PureComponent {
 
-  renderEditCount = (item) => {
+  renderEditCount = (item, cartItems) => {
+    const findItem = cartItems.find(c => c.barcode === item.barcode);
     return <div className="input-group mb-3 col-md-6 offset-md-3">
       <div className="input-group-prepend">
         <span className="input-group-text" onClick={() => this.props.onDeleteItemCount(item)}>-</span>
       </div>
-      <input type="text" className="form-control" value={item.count}/>
+      <input type="text" className="form-control" value={findItem ? findItem.count : 0}/>
       <div className="input-group-append">
         <span className="input-group-text" onClick={() => this.props.onAddItemCount(item)}>+</span>
       </div>
@@ -35,12 +36,13 @@ class ItemList extends PureComponent {
               {item.type}
             </td>
             <td width="25%">
-              {this.renderEditCount(item)}
+              {this.renderEditCount(item, this.props.cartItems)}
             </td>
           </tr>
         })}
         </tbody>
       </table>
+      <button className="btn btn-primary" onClick={() => this.props.changeView('cart')}>购物车</button>
     </div>
   }
 }
